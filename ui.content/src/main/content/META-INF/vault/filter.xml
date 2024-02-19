@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspaceFilter version="1.0">
+    <filter root="/conf/contentcraft" mode="merge"/>
+    <filter root="/content/contentcraft" mode="merge"/>
+    <filter root="/content/dam/contentcraft/asset.jpg" mode="merge"/>
+    <filter root="/content/experience-fragments/contentcraft" mode="merge"/>
+</workspaceFilter>
