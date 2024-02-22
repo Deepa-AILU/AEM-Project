@@ -1,70 +1,48 @@
-//Certainly! Below is the provided TypeScript code converted into Java:
+//Certainly! Here's a rough translation of the provided JavaScript code into Java:
 
-
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PricingGridConverter {
-
     public static void main(String[] args) {
-        try {
-            String pricingGridFile = findPricingGridFile("json/input/");
-            if (pricingGridFile != null) {
-                writeJsonOutput(parseExcel(pricingGridFile), "json/output/dhl-rates.json");
-            } else {
-                throw new IOException("Failed to find exactly one .xlsx file. Ensure there is only one .xlsx file in the input directory.");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        // Assuming pricingGridSheet is a class field or method parameter
+        // List<List<String>> pricingGridSheet = ...;
+
+        List<String> headers = pricingGridSheet != null && pricingGridSheet.size() > 0 ? pricingGridSheet.get(0) : new ArrayList<>();
+        List<Map<String, Object>> items = new ArrayList<>();
+
+        for (int i = 1; i < pricingGridSheet.size(); i++) {
+            List<String> row = pricingGridSheet.get(i);
+            Map<String, Object> item = new HashMap<>();
+
+            item.put("lien", row.get(headers.indexOf("LienPosition")));
+            item.put("amountLow", Double.parseDouble(row.get(headers.indexOf("LoanAmount-Low"))));
+            item.put("amountHigh", Double.parseDouble(row.get(headers.indexOf("LoanAmount-High"))));
+            // Add other properties similarly
+
+            items.add(item);
         }
+
+        Map<String, Double> rateAndAmountByKey = items.stream()
+                .filter(item -> !item.get("rate").equals("Ineligible"))
+                .reduce(new HashMap<>(), (byKey, item) -> {
+                    byKey.put(makeRateMapKey(item), Double.parseDouble(item.get("rate").toString()));
+                    return byKey;
+                }, (m1, m2) -> {
+                    m1.putAll(m2);
+                    return m1;
+                });
+
+        // Further processing or output as needed
     }
 
-    private static String findPricingGridFile(String directoryPath) {
-        File directory = new File(directoryPath);
-        File[] files = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".xlsx"));
-
-        if (files != null && files.length == 1) {
-            return files[0].getAbsolutePath();
-        }
-        return null;
-    }
-
-    private static void writeJsonOutput(Object data, String outputPath) {
-        try (FileWriter fileWriter = new FileWriter(outputPath)) {
-            fileWriter.write(data.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static Object parseExcel(String filePath) throws IOException {
-        try (FileInputStream fileInputStream = new FileInputStream(new File(filePath));
-             Workbook workbook = new XSSFWorkbook(fileInputStream)) {
-
-            // Your existing logic for parsing Excel goes here
-
-            // Example: Iterating over sheets
-            Iterator<Sheet> sheetIterator = workbook.sheetIterator();
-            while (sheetIterator.hasNext()) {
-                Sheet sheet = sheetIterator.next();
-                // Process each sheet as needed
-            }
-
-            // Example: Accessing cell data
-            Sheet sheet = workbook.getSheetAt(0);
-            Row row = sheet.getRow(0);
-            Cell cell = row.getCell(0);
-            String cellValue = cell.getStringCellValue();
-
-            return cellValue; // Replace with your actual parsed data
-        }
+    private static String makeRateMapKey(Map<String, Object> item) {
+        // Implement the logic for creating the rate map key
+        // Example: return item.get("state") + "_" + item.get("lien") + "_" + ...
+        return "";
     }
 }
 
-//Note: This Java code assumes the use of Apache POI library for Excel handling. Make sure to add the necessary dependencies to your project for Apache POI. Also, you might need to adjust the logic inside `parseExcel` based on your actual Excel structure and requirements.
+//Please note that you might need to adjust the types and modify the `makeRateMapKey` method based on the actual logic for creating the rate map key. Additionally, this is a basic conversion, and the actual implementation may require further adjustments based on your specific requirements and the data structures used in your Java application.
