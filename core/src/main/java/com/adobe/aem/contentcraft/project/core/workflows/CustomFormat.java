@@ -49,7 +49,9 @@ public class ExcelToJsonConverter {
             String jsonString = objectMapper.writeValueAsString(jsonDataList);
 
             System.out.println(jsonString);
-
+private static Boolean validateHeaderByKey(String header) {
+    return Set.of(LIEN_POSITION, AMOUNT_LOW, AMOUNT_HIGH, SCORE_LOW, CLTV_LOW, STATE, PRICE).contains(header);
+        }
             workbook.close();
             inputStream.close();
 
