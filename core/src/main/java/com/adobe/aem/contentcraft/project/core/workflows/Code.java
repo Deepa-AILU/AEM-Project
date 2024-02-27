@@ -1,44 +1,37 @@
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.HashSet;
 
-public class PricingGridConverter {
+public class RowToHashMap {
+
     public static void main(String[] args) {
-        List<Map<String, Object>> pricingGridData = /* Your pricingGrid data */;
-        
-        Map<String, Double> rateAndAmountByKey = pricingGridData.stream()
-                .filter(item -> !"Ineligible".equals(item.get("rate"))) // Filter out items with rate "Ineligible"
-                .reduce(new HashMap<>(), (byKey, item) -> {
-                    String key = makeRateMapKey(item); // Assuming you have a function for this
-                    boolean isFirstLien = "1st Lien".equals(item.get("lien"));
-                    double score = Double.parseDouble(item.get("scorelow").toString());
-                    double cltv = Double.parseDouble(item.get("cltvLow").toString().replace("", ""));
-                    double amountLow = Double.parseDouble(item.get("amountLow").toString());
-                    double amountHigh = Double.parseDouble(item.get("amountHigh").toString());
-                    String state = item.get("state").toString();
-                    double rate = Double.parseDouble(item.get("rate").toString());
-                    
-                    byKey.put(key, calculateRate(isFirstLien, score, cltv, amountLow, amountHigh, state, rate));
-                    
-                    return byKey;
-                }, (m1, m2) -> {
-                    m1.putAll(m2);
-                    return m1;
-                });
+        // Sample row
+        String[] rowArray = {"Key1", "Value1", "Value2", "Value1"};
 
-        System.out.println("Rate and Amount by Key: " + rateAndAmountByKey);
+        // Convert row to HashMap<String, Object>
+        HashMap<String, Object> rowHashMap = convertRowToHashMap(rowArray);
+
+        // Display the result
+        System.out.println(rowHashMap);
     }
 
-    private static String makeRateMapKey(Map<String, Object> item) {
-        // Implement the logic to generate the key based on item values
-        // For example, concatenate relevant values or use a specific format
-        return item.get("someKey").toString(); // Replace with your actual key generation logic
-    }
+    private static HashMap<String, Object> convertRowToHashMap(String[] row) {
+        HashMap<String, Object> hashMap = new HashMap<>();
 
-    private static double calculateRate(boolean isFirstLien, double score, double cltv, double amountLow,
-                                        double amountHigh, String state, double rate) {
-        // Implement your logic to calculate the rate based on the provided parameters
-        // For example, you can use a formula or apply specific business rules
-        return rate; // Replace with your actual rate calculation logic
+        // Use the first cell value as the key
+        String key = row[0];
+
+        // Use a HashSet to store unique values for other cells
+        HashSet<Object> valuesSet = new HashSet<>();
+
+        // Loop through the row starting from the second cell
+        for (int i = 1; i < row.length; i++) {
+            // Add the current cell value to the set (ignoring duplicates)
+            valuesSet.add(row[i]);
+        }
+
+        // Store the key and values set in the HashMap
+        hashMap.put(key, valuesSet);
+
+        return hashMap;
     }
 }
