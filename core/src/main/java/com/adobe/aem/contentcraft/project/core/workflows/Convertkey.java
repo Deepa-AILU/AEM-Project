@@ -17,6 +17,14 @@ public class YourClass {
                         }
                 ));
     }
+    
+import java.util.stream.Collectors;
+
+Map<String, Double> rateAndAmountByKey = items.stream()
+        .collect(Collectors.toMap(
+                item -> makeRateMapKey(item),
+                item -> Double.parseDouble(item.get("rate").toString())
+        ));
 
     private static String makeRateMapKey(YourItemType item) {
         return String.format("%s_%s_%s_%s_%s",
