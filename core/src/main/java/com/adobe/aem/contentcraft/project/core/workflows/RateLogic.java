@@ -22,7 +22,13 @@ public class ExcelReader {
 
             for (int keyRowIndex : keyRowIndices) {
                 Row keyRow = sheet.getRow(keyRowIndex);
-                String key = keyRow.getCell(0).getStringCellValue();
+                StringBuilder keyBuilder = new StringBuilder();
+
+                for (Cell cell : keyRow) {
+                    keyBuilder.append(cell.getStringCellValue());
+                }
+
+                String key = keyBuilder.toString();
                 Set<String> valuesSet = new HashSet<>();
 
                 for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
@@ -30,8 +36,12 @@ public class ExcelReader {
                     String value1 = currentRow.getCell(valueColumnIndex1).getStringCellValue();
                     String value2 = currentRow.getCell(valueColumnIndex2).getStringCellValue();
 
-                    valuesSet.add(value1);
-                    valuesSet.add(value2);
+                    // Concatenate with iterator value
+                    String concatenatedValue1 = value1 + "_" + rowIndex;
+                    String concatenatedValue2 = value2 + "_" + rowIndex;
+
+                    valuesSet.add(concatenatedValue1);
+                    valuesSet.add(concatenatedValue2);
                 }
 
                 resultMap.put(key, valuesSet);
