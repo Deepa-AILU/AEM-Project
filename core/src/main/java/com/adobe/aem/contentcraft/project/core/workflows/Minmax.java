@@ -2,6 +2,8 @@ import org.apache.poi.ss.usermodel.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExcelMinMax {
 
@@ -14,8 +16,7 @@ public class ExcelMinMax {
 
             Sheet sheet = workbook.getSheetAt(0); // Assuming you are working with the first sheet
 
-            double minValue = Double.MAX_VALUE;
-            double maxValue = Double.MIN_VALUE;
+            List<Double> columnValues = new ArrayList<>();
 
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
@@ -23,15 +24,20 @@ public class ExcelMinMax {
                     Cell cell = row.getCell(columnIndexToCheck, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
 
                     if (cell.getCellType() == CellType.NUMERIC) {
-                        double cellValue = cell.getNumericCellValue();
-                        minValue = Math.min(minValue, cellValue);
-                        maxValue = Math.max(maxValue, cellValue);
+                        columnValues.add(cell.getNumericCellValue());
                     }
                 }
             }
 
-            System.out.println("Min Value: " + minValue);
-            System.out.println("Max Value: " + maxValue);
+            if (!columnValues.isEmpty()) {
+                double minValue = columnValues.stream().min(Double::compareTo).orElse(Double.NaN);
+                double maxValue = columnValues.stream().max(Double::compareTo).orElse(Double.NaN);
+
+                System.out.println("Min Value: " + minValue);
+                System.out.println("Max Value: " + maxValue);
+            } else {
+                System.out.println("No numeric values found in the specified column.");
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
