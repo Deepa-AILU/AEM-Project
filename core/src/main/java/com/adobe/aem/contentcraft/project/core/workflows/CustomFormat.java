@@ -49,41 +49,23 @@ public class ExcelToJsonConverter {
             String jsonString = objectMapper.writeValueAsString(jsonDataList);
 
             System.out.println(jsonString);
-            private LinkedHashMap<String, Object> resultFormattedData(Workbook workbook, int sheetIndex, int headerRowIndex) {
+            private TreeSet<Object> formatFloorByInput(Workbook workbook, int sheetIndex, int columnIndex, String columnHeader) {
     Sheet sheet = workbook.getSheetAt(sheetIndex);
-    Row headerRow = sheet.getRow(headerRowIndex);
+    TreeSet<Object> resultSet = new TreeSet<>();
 
-    LinkedHashMap<String, Object> resultFloorData = new LinkedHashMap<>();
-
-    Map<String, TreeSet<Object>> formattedFloorData = new HashMap<>();
-    List<String> headerColumns = Arrays.asList(AMOUNT_LOW, SCORE_LOW, CLTV_LOW);
-    List<String> keyHeader = Arrays.asList("amount", "score", "cltv");
-    String[] tableHeader = getTableHeader(workbook, sheetIndex);
-
-    for (int i = 0, j = 0; i < tableHeader.length; i++) {
-        String columnHeader = headerRow.getCell(i).getStringCellValue();
-        if (headerColumns.contains(tableHeader[i])) {
-            TreeSet<Object> resultFloorSet = formatFloorByInput(workbook, headerRowIndex, i, tableHeader[i]);
-            formattedFloorData.put(keyHeader.get(j), resultFloorSet);
-            j++;
+    for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+        Row row = sheet.getRow(rowIndex);
+        if (row != null) {
+            Cell cell = row.getCell(columnIndex);
+            if (cell != null) {
+                String cellValue = getCellValueAsString(cell).replaceAll("\\..*", "");
+                double value = Double.parseDouble(cellValue);
+                resultSet.add(value);
+            }
         }
     }
 
-    resultFloorData.put("floorsByInput", formattedFloorData);
-    resultFloorData.put("rateAndAmountByKey", rateByKey(workbook, sheetIndex, 0));
-    resultFloorData.put("codeByState", codeByState(workbook, 2, 0));
-
-    List<Double> minColumnValues = getCellValues(workbook, 0, 2);
-    List<Double> maxColumnValues = getCellValues(workbook, 0, 3);
-
-    if (!minColumnValues.isEmpty() && !maxColumnValues.isEmpty()) {
-        double minValue = minColumnValues.stream().min(Double::compareTo).orElse(Double.NaN);
-        double maxValue = maxColumnValues.stream().max(Double::compareTo).orElse(Double.NaN);
-        resultFloorData.put("minimumLoanAmount", minValue);
-        resultFloorData.put("maximumLoanAmount", maxValue);
-    }
-
-    return resultFloorData;
+    return (TreeSet<Object>) resultSet.descendingSet();
 }
 private static Boolean validateHeaderByKey(String header) {
     return Arrays.asList(LIEN_POSITION, AMOUNT_LOW, AMOUNT_HIGH, SCORE_LOW, CLTV_LOW, STATE, PRICE).contains(header);
