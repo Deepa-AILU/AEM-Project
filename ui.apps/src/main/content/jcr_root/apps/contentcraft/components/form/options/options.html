@@ -1,0 +1,19 @@
+<!-- /apps/yourapp/components/content/dropdown/options.html -->
+<sly data-sly-use.jsonModel="com.example.models.JsonDropdownModel"
+     data-sly-use.clientLib="/libs/granite/sightly/templates/clientlib.html">
+
+    <sly data-sly-test="${jsonModel.dropdownOptions}">
+        <sly data-sly-list.option="${jsonModel.dropdownOptions}">
+            <option value="${option.key}">${option.value}</option>
+        </sly>
+    </sly>
+</sly>
+<!-- /apps/yourapp/components/content/dropdown/dropdown.html -->
+<sly data-sly-use.options="yourapp/components/content/dropdown/options"
+     data-sly-use.clientLib="/libs/granite/sightly/templates/clientlib.html">
+
+    <label>Select an option:</label>
+    <core-form-select name="dropdown" required="${properties.required}">
+        <sly data-sly-resource="${options @ resourceType='yourapp/components/content/dropdown/options'}"/>
+    </core-form-select>
+</sly>
