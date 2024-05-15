@@ -1,100 +1,47 @@
-//To capture Excel sheet row data and convert it into a JSON object in Java, you can use the Apache POI library for Excel manipulation and a JSON library like Jackson for JSON processing. Below is a simple example:
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.poi.ss.usermodel.*;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class ExcelToJsonConverter {
+public class RangeAverageCalculator {
 
     public static void main(String[] args) {
-        try {
-            File excelFile = new File("path/to/your/excel/file.xlsx");
-            FileInputStream inputStream = new FileInputStream(excelFile);
+        List<String> rangeList = new ArrayList<>();
+        rangeList.add("800-850");
+        rangeList.add("780-799");
+        rangeList.add("760-779");
+        rangeList.add("740-759");
+        rangeList.add("720-739");
+        rangeList.add("700-719");
+        rangeList.add("680-699");
+        rangeList.add("670-679");
 
-            Workbook workbook = WorkbookFactory.create(inputStream);
-            Sheet sheet = workbook.getSheetAt(0); // Assuming the first sheet
+        Map<Double, String> averageRangeMap = new HashMap<>();
 
-            List<Map<String, String>> jsonDataList = new ArrayList<>();
+        for (String range : rangeList) {
+            // Split the range string into two parts based on the "-"
+            String[] rangeParts = range.split("-");
+            if (rangeParts.length == 2) {
+                try {
+                    int lowerBound = Integer.parseInt(rangeParts[0]);
+                    int upperBound = Integer.parseInt(rangeParts[1]);
 
-            // Assuming the first row contains headers
-            Row headerRow = sheet.getRow(0);
-            int lastCellNum = headerRow.getLastCellNum();
+                    // Calculate the average of the range
+                    double averageValue = (lowerBound + upperBound) / 2.0;
 
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-
-                if (row != null) {
-                    Map<String, String> rowData = new HashMap<>();
-
-                    for (int j = 0; j < lastCellNum; j++) {
-                        Cell cell = row.getCell(j);
-                        String header = headerRow.getCell(j).getStringCellValue();
-                        String cellValue = getCellValueAsString(cell);
-
-                        rowData.put(header, cellValue);
-                    }
-
-                    jsonDataList.add(rowData);
+                    // Store the average value as key and the original range as value in the map
+                    averageRangeMap.put(averageValue, range);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid range format: " + range);
                 }
-            }
-
-            // Convert List of Map to JSON
-            ObjectMapper objectMapper = new ObjectMapper();
-            String jsonString = objectMapper.writeValueAsString(jsonDataList);
-
-            System.out.println(jsonString);
-            private TreeSet<Object> formatFloorByInput(Workbook workbook, int sheetIndex, int columnIndex, String columnHeader) {
-    Sheet sheet = workbook.getSheetAt(sheetIndex);
-    TreeSet<Object> resultSet = new TreeSet<>();
-
-    for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
-        Row row = sheet.getRow(rowIndex);
-        if (row != null) {
-            Cell cell = row.getCell(columnIndex);
-            if (cell != null) {
-                String cellValue = getCellValueAsString(cell).replaceAll("\\..*", "");
-                double value = Double.parseDouble(cellValue);
-                resultSet.add(value);
+            } else {
+                System.out.println("Invalid range format: " + range);
             }
         }
-    }
 
-    return (TreeSet<Object>) resultSet.descendingSet();
-}
-private static Boolean validateHeaderByKey(String header) {
-    return Arrays.asList(LIEN_POSITION, AMOUNT_LOW, AMOUNT_HIGH, SCORE_LOW, CLTV_LOW, STATE, PRICE).contains(header);
-}
-            workbook.close();
-            inputStream.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static String getCellValueAsString(Cell cell) {
-        if (cell == null) {
-            return "";
-        }
-
-        switch (cell.getCellType()) {
-            case STRING:
-                return cell.getStringCellValue();
-            case NUMERIC:
-                return String.valueOf(cell.getNumericCellValue());
-            case BOOLEAN:
-                return String.valueOf(cell.getBooleanCellValue());
-            case FORMULA:
-                return cell.getCellFormula();
-            default:
-                return "";
+        // Print the averageRangeMap or use it as needed
+        for (Map.Entry<Double, String> entry : averageRangeMap.entrySet()) {
+            System.out.println("Average Value: " + entry.getKey() + ", Range: " + entry.getValue());
         }
     }
 }
-//according to your specific Excel file structure and requirements.
