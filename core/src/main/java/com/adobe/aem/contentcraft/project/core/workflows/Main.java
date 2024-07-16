@@ -38,3 +38,6 @@ class CheckResult {
 
     // getters and setters for other fields (if needed)
 }
+document.querySelectorAll('.bar-Labels').forEach(label => {
+    label.innerHTML = `<div class="value">${formatValue(pmtValue)}</div>`;
+});
