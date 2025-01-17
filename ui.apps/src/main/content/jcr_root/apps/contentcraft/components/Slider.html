@@ -1,0 +1,83 @@
+<!-- Calculator Widget AEM Component -->
+<div class="calculator-widget">
+    <h2>Loan Calculator</h2>
+    
+    <div class="slider-container">
+        <label for="loan-amount">Loan Amount:</label>
+        <input type="range" id="loan-amount" min="10000" max="500000" value="250000" oninput="updateValue('loan-amount', 'loan-amount-value')">
+        <span id="loan-amount-value">250000</span>
+    </div>
+
+    <div class="slider-container">
+        <label for="interest-rate">Interest Rate (%):</label>
+        <input type="range" id="interest-rate" min="1" max="10" value="5" oninput="updateValue('interest-rate', 'interest-rate-value')">
+        <span id="interest-rate-value">5</span>
+    </div>
+
+    <div class="slider-container">
+        <label for="loan-term">Loan Term (Years):</label>
+        <input type="range" id="loan-term" min="1" max="30" value="15" oninput="updateValue('loan-term', 'loan-term-value')">
+        <span id="loan-term-value">15</span>
+    </div>
+
+    <button onclick="calculateLoans()">Update</button>
+
+    <div id="results" style="margin-top: 20px;">
+        <h3>Results:</h3>
+        <p id="home-equity-result">Home Equity Loan Amount: $0</p>
+        <p id="mortgage-refinance-result">Mortgage Refinance Loan Amount: $0</p>
+    </div>
+</div>
+
+<script>
+    function updateValue(sliderId, valueId) {
+        const slider = document.getElementById(sliderId);
+        const valueDisplay = document.getElementById(valueId);
+        valueDisplay.textContent = slider.value;
+    }
+
+    function calculateLoans() {
+        const loanAmount = document.getElementById('loan-amount').value;
+        const interestRate = document.getElementById('interest-rate').value;
+        const loanTerm = document.getElementById('loan-term').value;
+
+        // Simple calculation for demonstration purposes
+        const homeEquityAmount = loanAmount * 0.8; // Example calculation
+        const mortgageRefinanceAmount = loanAmount * 0.9; // Example calculation
+
+        document.getElementById('home-equity-result').textContent = `Home Equity Loan Amount: $${homeEquityAmount}`;
+        document.getElementById('mortgage-refinance-result').textContent = `Mortgage Refinance Loan Amount: $${mortgageRefinanceAmount}`;
+    }
+</script>
+
+<style>
+    .calculator-widget {
+        max-width: 400px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+    }
+    .slider-container {
+        margin-bottom: 15px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    input[type="range"] {
+        width: 100%;
+    }
+    button {
+        padding: 10px 15px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #218838;
+    }
+</style>
