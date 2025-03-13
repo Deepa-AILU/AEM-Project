@@ -1,0 +1,13 @@
+Publisher-Specific Network Routing/Firewall (Mondays/Tuesdays):
+
+Use traceroute and ping from Publishers 1 and 2 to the API URL specifically on Mondays and Tuesdays. Compare results with Publisher 3.
+Verify firewall rules on Publishers 1 and 2 for outbound connections to the API only on Mondays and Tuesdays.
+AEM Server Resource Usage (Mondays/Tuesdays):
+
+Monitor CPU, memory, and network utilization of Publishers 1 and 2 only on Mondays and Tuesdays. Look for spikes or anomalies.
+Review AEM and OS logs for Publishers 1 and 2 only on Mondays and Tuesdays for any error messages or warnings.
+From the API End:
+
+API Load/Maintenance (Mondays/Tuesdays):
+Directly confirm with the API provider if they have increased load or scheduled maintenance on Mondays and Tuesdays.
+Monitor the API's response time and availability from a source outside your AEM environment on Mondays and Tuesdays to isolate AEM specific issues.
