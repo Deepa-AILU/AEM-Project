@@ -1,17 +1,12 @@
-Okay, focusing on the core issue and the time-sensitive nature, here are the exact pointers to check:
+3rd Party API Load/Maintenance:
 
-From the AEM End:
+Directly contact the API provider to inquire about potential load spikes or scheduled maintenance on Mondays and Tuesdays.
+Implement robust API monitoring (response times, availability) specifically during those days to gather data.
+Network Behavior (Time-Specific):
 
-Publisher-Specific Network Routing/Firewall (Mondays/Tuesdays):
+Utilize network monitoring tools (Wireshark, tcpdump) to capture and analyze network traffic from all three publishers, focusing on the failure windows on Mondays and Tuesdays.
+Compare routing, latency, and packet loss between publishers to identify any discrepancies.
+Internal Scheduled Processes/Resource Usage:
 
-Use traceroute and ping from Publishers 1 and 2 to the API URL specifically on Mondays and Tuesdays. Compare results with Publisher 3.
-Verify firewall rules on Publishers 1 and 2 for outbound connections to the API only on Mondays and Tuesdays.
-AEM Server Resource Usage (Mondays/Tuesdays):
-
-Monitor CPU, memory, and network utilization of Publishers 1 and 2 only on Mondays and Tuesdays. Look for spikes or anomalies.
-Review AEM and OS logs for Publishers 1 and 2 only on Mondays and Tuesdays for any error messages or warnings.
-From the API End:
-
-API Load/Maintenance (Mondays/Tuesdays):
-Directly confirm with the API provider if they have increased load or scheduled maintenance on Mondays and Tuesdays.
-Monitor the API's response time and availability from a source outside your AEM environment on Mondays and Tuesdays to isolate AEM specific issues.
+Thoroughly review all scheduled tasks on the AEM servers and the network for any processes running on Mondays and Tuesdays that might consume excessive resources.
+Monitor CPU, memory, and network utilization of all publishers during the affected times to identify resource contention.
