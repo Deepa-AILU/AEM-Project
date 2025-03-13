@@ -1,3 +1,7 @@
+Okay, focusing on the core issue and the time-sensitive nature, here are the exact pointers to check:
+
+From the AEM End:
+
 Publisher-Specific Network Routing/Firewall (Mondays/Tuesdays):
 
 Use traceroute and ping from Publishers 1 and 2 to the API URL specifically on Mondays and Tuesdays. Compare results with Publisher 3.
