@@ -1,0 +1,45 @@
+Sure, here's the updated code using the JCR API directly:
+
+````java
+private Asset storeFileInJCR(String destinationPath, String fileName, InputStream jsonStream) throws LoginException {
+    Map<String, Object> serviceNameParam = new HashMap<>();
+    serviceNameParam.put(ResourceResolverFactory.SUBSERVICE, "DhlPricingGridWorkflowService");
+    ResourceResolver resolver = resolverFactory.getServiceResourceResolver(serviceNameParam);
+
+    try {
+        // Get the parent node at the destinationPath
+        Node parentNode = resolver.getResource(destinationPath).adaptTo(Node.class);
+
+        // Create a new node for the file
+        Node fileNode = parentNode.addNode(fileName, "nt:file");
+        Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
+
+        // Set the file content and mime type
+        contentNode.setProperty("jcr:data", jsonStream);
+        contentNode.setProperty("jcr:mimeType", PricingGridWorkflowConstants.JSON_MIME_TYPE);
+
+        // Save the changes
+        resolver.commit();
+
+        // Return the created Asset
+        return resolver.getResource(fileNode.getPath()).adaptTo(Asset.class);
+    } catch (RepositoryException e) {
+        LOGGER.error("Error occurred while storing file in JCR: {}", e.getMessage());
+        return null;
+    } finally {
+        resolver.close();
+    }
+}
+````
+
+The key changes are:
+
+1. Wrapped the JCR operations in a try-catch block to handle any repository exceptions.
+2. Used `resolver.getResource(destinationPath).adaptTo(Node.class)` to get the parent node at the `destinationPath`.
+3. Created a new node for the file using `fileNode = parentNode.addNode(fileName, "nt:file")`.
+4. Created a `jcr:content` node for the file node and set the `jcr:data` and `jcr:mimeType` properties.
+5. Committed the changes using `resolver.commit()`.
+6. Returned the created `Asset` object.
+7. Closed the `ResourceResolver` in the finally block to ensure proper resource cleanup.
+
+This version of the code uses the JCR API directly to create the file in the repository, which provides more control and flexibility compared to the previous `AssetManager` approach.
