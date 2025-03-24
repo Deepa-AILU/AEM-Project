@@ -1,0 +1,67 @@
+To modify your method so that it checks if a node exists at the specified path, deletes the existing node if it does, and then creates a new node, you can follow these steps:
+
+1. **Check for Node Existence**: Use `resolver.getResource()` to check if the node exists.
+2. **Delete Existing Node**: If the node exists, delete it before creating a new one.
+3. **Create New Node**: Proceed to create the new node after deletion.
+
+Here’s the updated code with these changes:
+
+```java
+private Asset storeFileInJCR(String destinationPath, String fileName, InputStream jsonStream) throws LoginException {
+    if (destinationPath == null || fileName == null || jsonStream == null) {
+        throw new IllegalArgumentException("Parameters cannot be null");
+    }
+
+    Map<String, Object> serviceNameParam = new HashMap<>();
+    serviceNameParam.put(ResourceResolverFactory.SUBSERVICE, "DhlPricingGridWorkflowService");
+    ResourceResolver resolver = resolverFactory.getServiceResourceResolver(serviceNameParam);
+
+    try {
+        // Construct the full path for the file node
+        String fileNodePath = destinationPath + "/" + fileName;
+
+        // Check if the file node exists
+        Resource existingResource = resolver.getResource(fileNodePath);
+        if (existingResource != null) {
+            // If it exists, delete the existing node
+            Node existingNode = existingResource.adaptTo(Node.class);
+            existingNode.remove();
+        }
+
+        // Get the parent node at the destinationPath
+        Node parentNode = resolver.getResource(destinationPath).adaptTo(Node.class);
+        if (parentNode == null) {
+            throw new RepositoryException("Parent node not found at path: " + destinationPath);
+        }
+
+        // Create a new node for the file
+        Node fileNode = parentNode.addNode(fileName, "nt:file");
+        Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
+
+        // Set the file content and mime type
+        contentNode.setProperty("jcr:data", jsonStream);
+        contentNode.setProperty("jcr:mimeType", PricingGridWorkflowConstants.JSON_MIME_TYPE);
+
+        // Save the changes
+        resolver.commit();
+
+        // Return the created Asset
+        return resolver.getResource(fileNode.getPath()).adaptTo(Asset.class);
+    } catch (RepositoryException e) {
+        LOGGER.error("Error occurred while storing file in JCR: {}", e.getMessage());
+        throw e; // Rethrow or handle accordingly
+    } finally {
+        resolver.close();
+    }
+}
+```
+
+### Key Changes
+
+1. **Node Existence Check**: The code checks if the node exists at the constructed path (`fileNodePath`).
+2. **Node Deletion**: If the node exists, it is removed using `existingNode.remove()`.
+3. **Full Path Construction**: The path for the file node is constructed based on the `destinationPath` and `fileName`.
+
+### Conclusion
+
+This modified method will now check for an existing node, delete it if found, and create a new one, ensuring that the latest file is stored correctly. If you have any further questions or need additional modifications, feel free to ask!
