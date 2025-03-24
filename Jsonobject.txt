@@ -1,0 +1,44 @@
+Sure, here's the modified code using the Gson library instead of the Jackson library:
+
+````java
+public class ConvertXLSXtoJSONFormatProcess implements WorkflowProcess {
+    private String getJsonData(Resource original, String mimeType) {
+        Workbook workbook;
+        JsonElement jsonObject = null;
+        Map<String, Object> excelData;
+
+        LOGGER.info("Resource " + original);
+
+        if (StringUtils.isNotEmpty(mimeType) && mimeType.contains(PricingGridWorkflowConstants.XLSX)) {
+            try (final InputStream stream = original.adaptTo(InputStream.class)) {
+                if (Objects.nonNull(stream)) {
+                    if (mimeType.equals(PricingGridWorkflowConstants.XLSX)) {
+                        workbook = new XSSFWorkbook(stream);
+                    } else if (mimeType.equals(PricingGridWorkflowConstants.XLS)) {
+                        workbook = new HSSFWorkbook(stream);
+                    } else {
+                        return null;
+                    }
+
+                    // Get excel data as list of map objects and parse into JSON array
+                    excelData = resultFormattedData(workbook, 0, 0);
+                    Gson gson = new Gson();
+                    jsonObject = gson.toJsonTree(excelData);
+                }
+            } catch (IOException e) {
+                LOGGER.error("Error Occurred: {}", e.getMessage());
+            }
+        }
+
+        return jsonObject != null ? jsonObject.toString() : null;
+    }
+}
+````
+
+The key changes are:
+
+1. Replaced `JsonNode jsonObject = null;` with `JsonElement jsonObject = null;` to use the Gson library for JSON handling.
+2. Changed the line `jsonObject = new ObjectMapper().valueToTree(excelData);` to `jsonObject = gson.toJsonTree(excelData);` to create a JsonElement object from the excelData map using the Gson library.
+3. Returned the JSON string representation of the JsonElement object instead of the JsonNode.
+
+This should address the issue with the deprecated `JSONObject` and provide an alternative approach using the Gson library for JSON handling.
