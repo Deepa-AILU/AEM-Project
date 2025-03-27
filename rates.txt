@@ -1,0 +1,66 @@
+Here's a structured outline for the Discover Home Loans website rates change process, formatted as a Jira story. This will help in tracking the process from the pricing team to the final go-live of the rates.
+
+### Jira Story: Rates Change Process for Discover Home Loans
+
+**Story Title:** Rates Change Process Go Live
+
+**Story Description:**
+This story outlines the process for implementing a rates change for Discover Home Loans, ensuring all steps from initial pricing updates to the final publication of rates are clearly defined and executed.
+
+---
+
+#### **Acceptance Criteria:**
+
+1. **Rates Change Request:**
+   - Pricing team provides updated rates via the pricing grid.
+   - Test cases are created in Jira for the pricing changes.
+
+2. **RIK Document Creation:**
+   - Business team (Oscar) creates the Rates RIK document based on the pricing grid.
+   - RIK document must be reviewed and approved by relevant stakeholders.
+
+3. **Update AEM DAM:**
+   - Update `Rates.json` in AEM DAM according to the rates change from the pricing grid.
+   - Upload the pricing grid Excel file to the DAM, which generates `dhl-rates.json` in the DAM pricing grid folder for calculators.
+
+4. **Testing:**
+   - QA team tests the updated rates in the production author environment.
+   - Sign-off from QA team is required before go-live.
+
+5. **Go Live:**
+   - On the scheduled go-live day, publish both `Rates.json` and `dhl-rates.json` from AEM DAM.
+
+---
+
+#### **Process Steps:**
+
+1. **Gather Rates Change:**
+   - Pricing team submits updated rates and pricing grid.
+   - Create corresponding test cases in Jira.
+
+2. **RIK Creation:**
+   - Oscar from the business team drafts the Rates RIK document.
+   - Ensure all necessary approvals are obtained.
+
+3. **AEM DAM Updates:**
+   - Update `Rates.json` with new rates.
+   - Upload the pricing grid Excel to the DAM.
+   - Confirm that `dhl-rates.json` is generated correctly.
+
+4. **Quality Assurance:**
+   - Conduct testing in the production author environment.
+   - Obtain QA sign-off on the changes.
+
+5. **Publishing:**
+   - On go-live day, publish `Rates.json` and `dhl-rates.json` from AEM DAM to make the new rates live.
+
+---
+
+#### **Additional Notes:**
+- Ensure all communications are documented in Jira.
+- Schedule regular check-ins with the pricing and business teams to track progress.
+- Prepare rollback plans in case of any issues during the go-live.
+
+---
+
+This structured approach will facilitate a smooth rates change process for the Discover Home Loans website, ensuring all teams are aligned and all steps are adequately documented and executed.
